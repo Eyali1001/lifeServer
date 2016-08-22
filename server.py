@@ -19,22 +19,42 @@ def close_connection(exception):
     if db is not None:
         db.close()
 
-def init_db():
-    with app.app_context():
-        db = get_db()
-        with app.open_resource('schema.sql', mode='r') as f:
-            db.cursor().executescript(f.read())
-        db.commit()
 
 @app.route("/",methods=["POST"])
 def insertintodb():
-	db  = get_db()
+        db  = get_db()
 	c = db.cursor()
 	c.execute("INSERT INTO patients (patient_name,diagnosis,gender,age,category) values (?,?,?,?,?)", 
 	(request.form["n"],request.form["d"],request.form["g"],request.form['a'],request.form['c']))
 	db.commit()
 	return "Done."
-	
+
+
+@app.route("/signup",methods=['POST'])
+def signup():
+    db = get_db()
+    c = db.cursor()
+    c.execute("INSERT INTO users (username,password) values (?,?)",
+              (request.form['u'],request.form['p']))
+    db.commit()
+    return "Success"
+
+
+@app.route("/signin",methods=['POST'])
+def signin():
+    db = get_db()
+    c = db.cursor()
+
+    c.execute("SELECT * FROM users WHERE username=?",(request.form['u'],))
+    d = c.fetchall()
+    print d[0][2]
+    if request.form['p'] == d[0][2]:
+        return str(d[0][0])
+    else:
+        return "invalid"
+    
+        
+    
 @app.route("/<category>",methods=['GET'])
 def getcategory(category):
 	db  = get_db()
@@ -50,7 +70,6 @@ def getcategory(category):
 	return r
 	
 
-with app.app_context():
-	init_db()
+
 	
 app.run()
