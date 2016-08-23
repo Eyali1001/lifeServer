@@ -1,4 +1,4 @@
-
+drop table if exists patients;
 create table patients (
   id integer primary key autoincrement,
   patient_name text not null,
@@ -8,9 +8,10 @@ create table patients (
   category text not null
 );
 
-
+drop table if exists users;
 create table users (
   id integer primary key autoincrement,
   username text not null UNIQUE,
-  password text not null
-  );
+  password text not null,
+  activechats text not null
+);
