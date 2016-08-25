@@ -30,8 +30,8 @@ def close_connection(exception):
 def insertintodb():
         db  = get_db()
 	c = db.cursor()
-	c.execute("INSERT INTO patients (patient_name,diagnosis,gender,age,category) values (?,?,?,?,?)", 
-	(request.form["n"],request.form["d"],request.form["g"],request.form['a'],request.form['c']))
+	c.execute("UPDATE patients SET diagnosis=?,category=? WHERE patient_name=? ", 
+	(request.form["d"],request.form['c'],request.form['u']))
 	db.commit()
 	return "Done."
 
@@ -40,10 +40,18 @@ def insertintodb():
 def signup():
     db = get_db()
     c = db.cursor()
-    c.execute("INSERT INTO users (username,password,activechats) values (?,?,?)",
-              (request.form['u'],request.form['p'],","))
-    db.commit()
-    return "Success"
+    if request.form['t'] == 'd':
+        c.execute("INSERT INTO users (username,password,activechats,image) values (?,?,?,?)",
+                  (request.form['u'],request.form['p'],",",request.form['b']))
+        db.commit()
+        return "Success"
+    elif  request.form['t'] == 'p':
+        c.execute("INSERT INTO patients (patient_name,password,image,age,gender) values (?,?,?,?,?)",
+                  (request.form['u'],request.form['p'],request.form['b'],request.form['a'],request.form['g']))
+        db.commit()
+        
+        return "Success"
+    return "type error"
 
 @app.route("/chat", methods=['POST'])
 def updatechats():
@@ -85,17 +93,17 @@ def signin():
 def getcategory(category):
 	db  = get_db()
 	c = db.cursor()
-	c.execute("SELECT * FROM patients WHERE category=?",(category,))
+	c.execute("SELECT id,patient_name,image,diagnosis,gender,age,category FROM patients WHERE category=?",(category,))
 	data = c.fetchall()
 	response = []
-	diclist = ['id','name','diagnosis','gender','age','category']
+	diclist = ['id','name','image','diagnosis','gender','age','category']
 	for row in data:
-		dic = {diclist[i]: str(row[i]) for i in range(len(diclist))}
+                
+		dic = {diclist[i]: row[i] for i in range(len(diclist))}
 		response.append(dic)
+
 	r = json.dumps(response)
 	return r
-
-
 
 
 app.config["DEBUG"]=True	
