@@ -8,8 +8,8 @@ app = Flask(__name__)
 def get_db():
     db = getattr(g, '_database', None)
     if db is None:
-		print "initialized"
-		db = g._database = sqlite3.connect("database.db")
+	    print ("initialized")
+	    db = g._database = sqlite3.connect("database.db")
 	
     return db
 
@@ -29,12 +29,12 @@ def close_connection(exception):
 
 @app.route("/",methods=["POST"])
 def insertintodb():
-        db  = get_db()
-	c = db.cursor()
-	c.execute("UPDATE patients SET diagnosis=?,category=? WHERE patient_name=? ", 
-	(request.form["d"],request.form['c'],request.form['u']))
-	db.commit()
-	return "Done."
+    db  = get_db()
+    c = db.cursor()
+    c.execute("UPDATE patients SET diagnosis=?,category=? WHERE patient_name=? ", 
+    (request.form["d"],request.form['c'],request.form['u']))
+    db.commit()
+    return "Done."
 
 
 @app.route("/signup",methods=['POST'])
@@ -82,7 +82,7 @@ def signin():
 
     c.execute("SELECT * FROM users WHERE username=?",(request.form['u'],))
     d = c.fetchall()
-    print d
+    print (d)
     if request.form['p'] == d[0][2]:
         return str(d[0][0])
     else:
@@ -118,6 +118,7 @@ def images():
 		db.commit()
 		return "done"
 		
-
+with app.app_context():
+    init_db()
 app.config["DEBUG"]=True	
 app.run()
