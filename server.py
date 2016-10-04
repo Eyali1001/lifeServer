@@ -13,6 +13,7 @@ def get_db():
 	
     return db
 
+
 def init_db():
     db = get_db()
     with app.open_resource('schema.sql', mode='r') as f:
@@ -105,6 +106,18 @@ def getcategory(category):
 	r = json.dumps(response)
 	return r
 
+@app.route("/image",methods=['POST'])
+def images():
+	db  = get_db()
+	c = db.cursor()
+	if request.form['t'] == 'get':
+		c.execute("SELECT image FROM images WHERE username=?", (request.form['u'],))
+		return json.dumps(c.fetchall())
+	else:
+		c.execute("INSERT INTO images (image,username) VALUES (?,?)",(request.form['i'],request.form['u']))
+		db.commit()
+		return "done"
+		
 
 app.config["DEBUG"]=True	
 app.run()

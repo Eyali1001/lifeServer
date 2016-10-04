@@ -18,3 +18,10 @@ create table users (
   image blob,
   activechats text not null
 );
+
+drop table if exists images;
+create table images (
+   image blob not null,
+   username text not null
+
+);
