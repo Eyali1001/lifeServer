@@ -7,7 +7,8 @@ create table patients (
   diagnosis text,
   gender text not null,
   age int not null,
-  category text 
+  category text,
+  activechats text not null 
 );
 
 drop table if exists users;
