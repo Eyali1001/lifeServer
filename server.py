@@ -53,7 +53,7 @@ def signup():
         db.commit()
         return "Success"
     elif  request.form['t'] == 'p':
-        c.execute("INSERT INTO patients (patient_name,password,image,age,gender,category,activechats) values (?,?,?,?,?,?)",
+        c.execute("INSERT INTO patients (patient_name,password,image,age,gender,category,activechats) values (?,?,?,?,?,?,?)",
                   (request.form['u'],request.form['p'],request.form['b'],request.form['a'],request.form['g'],"general",""))
         db.commit()
         
