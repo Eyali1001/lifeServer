@@ -139,20 +139,20 @@ def getcategory(category):
 @app.route("/<du>",methods=['GET'])
 def getpatients(du):
         db  = get_db()
-	c = db.cursor()
-	c.execute("SELECT category FROM users WHERE username=?",(du,))
-	category = c.fetchone()[0]
-	c.execute("SELECT id,patient_name,image,diagnosis,gender,age,category FROM patients WHERE category=?",(category,))
-	data = c.fetchall() 
-	response = []
-	diclist = ['id','name','image','diagnosis','gender','age','category']
-	for row in data:
+        c = db.cursor()
+        c.execute("SELECT category FROM users WHERE username=?",(du,))
+        category = c.fetchone()[0]
+        c.execute("SELECT id,patient_name,image,diagnosis,gender,age,category FROM patients WHERE category=?",(category,))
+        data = c.fetchall() 
+        response = []
+        diclist = ['id','name','image','diagnosis','gender','age','category']
+        for row in data:
                 
-		dic = {diclist[i]: row[i] for i in range(len(diclist))}
-		response.append(dic)
+                dic = {diclist[i]: row[i] for i in range(len(diclist))}
+                response.append(dic)
 
-	r = json.dumps(response)
-	return r
+        r = json.dumps(response)
+        return r
 
 
 
