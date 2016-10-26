@@ -48,8 +48,8 @@ def signup():
     db = get_db()
     c = db.cursor()
     if request.form['t'] == 'd':
-        c.execute("INSERT INTO users (username,password,activechats,image) values (?,?,?,?)",
-                  (request.form['u'],request.form['p'],"",request.form['b']))
+        c.execute("INSERT INTO users (username,password,activechats,image,category) values (?,?,?,?,?)",
+                  (request.form['u'],request.form['p'],"",request.form['b'],request.form['c']))
         db.commit()
         return "Success"
     elif  request.form['t'] == 'p':
@@ -120,7 +120,7 @@ def signin():
             return "false"
         
     
-@app.route("/<category>",methods=['GET'])
+
 def getcategory(category):
 	db  = get_db()
 	c = db.cursor()
@@ -135,6 +135,26 @@ def getcategory(category):
 
 	r = json.dumps(response)
 	return r
+
+@app.route("/<du>",methods=['GET'])
+def getpatients(du):
+        db  = get_db()
+	c = db.cursor()
+	c.execute("SELECT category FROM users WHERE username=?",(du,))
+	category = c.fetchone()[0]
+	c.execute("SELECT id,patient_name,image,diagnosis,gender,age,category FROM patients WHERE category=?",(category,))
+	data = c.fetchall() 
+	response = []
+	diclist = ['id','name','image','diagnosis','gender','age','category']
+	for row in data:
+                
+		dic = {diclist[i]: row[i] for i in range(len(diclist))}
+		response.append(dic)
+
+	r = json.dumps(response)
+	return r
+
+
 
 @app.route("/image",methods=['POST'])
 def images():

@@ -17,7 +17,8 @@ create table users (
   username text not null UNIQUE,
   password text not null,
   image blob,
-  activechats text not null
+  activechats text not null,
+  category text
 );
 
 drop table if exists images;
