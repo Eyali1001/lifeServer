@@ -27,3 +27,10 @@ create table images (
    username text not null
 
 );
+
+drop table if exists locations;
+create table locations (
+	lat real not null,
+	lng real not null,
+	category text not null
+)

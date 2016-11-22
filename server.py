@@ -167,6 +167,30 @@ def images():
 		c.execute("INSERT INTO images (image,username) VALUES (?,?)",(request.form['i'],request.form['u']))
 		db.commit()
 		return "done"
-
+		
+@app.route("/locations", methods=['POST'])
+def insertlocs():
+	db  = get_db()
+	c = db.cursor()
+	c.execute("INSERT INTO locations (lat,lng,category) VALUES (?,?,?)",(request.form['lat'],request.form['lng'],request.form['c']))
+	db.commit()
+	return "inserted"
+	
+@app.route("/locations/<category>",methods=['GET'])
+def getlocs(category):
+	db  = get_db()
+	c = db.cursor()
+	c.execute("SELECT lat,lng FROM locations WHERE category=?", (category,))
+	data = c.fetchall()
+	response = []
+	l = ["lat","lng"]
+	for row in data:
+		response.append({l[i]:row[i] for i in range(len(row))})
+	return json.dumps(response)
+		
+	
+	
+#with app.app_context():
+#	init_db()
 app.config["DEBUG"]=True	
 app.run()
