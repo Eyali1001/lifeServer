@@ -53,8 +53,8 @@ def signup():
         db.commit()
         return "Success"
     elif  request.form['t'] == 'p':
-        c.execute("INSERT INTO patients (patient_name,password,image,age,gender,category,activechats) values (?,?,?,?,?,?,?)",
-                  (request.form['u'],request.form['p'],request.form['b'],request.form['a'],request.form['g'],"general",""))
+        c.execute("INSERT INTO patients (patient_name,password,image,age,gender,category,activechats,treated) values (?,?,?,?,?,?,?,?)",
+                  (request.form['u'],request.form['p'],request.form['b'],request.form['a'],request.form['g'],"general","",0))
         db.commit()
         
         return "Success"
@@ -74,8 +74,8 @@ def updatechats():
     else:
         c.execute("UPDATE users SET activechats=? WHERE username=?" ,
                   (data[0][0]+request.form['pu']+",",request.form['du']))
-        c.execute("UPDATE patients SET activechats=? WHERE patient_name=?" ,
-                  (data1[0][0]+request.form['du']+",",request.form['pu']))
+        c.execute("UPDATE patients SET activechats=?, treated=? WHERE patient_name=?" ,
+                  (data1[0][0]+request.form['du']+",",1,request.form['pu']))
         db.commit()
         return "done"
 
@@ -120,11 +120,11 @@ def signin():
             return "false"
         
     
-
+@app.route("/alt/<category>",methods=['GET'])
 def getcategory(category):
 	db  = get_db()
 	c = db.cursor()
-	c.execute("SELECT id,patient_name,image,diagnosis,gender,age,category FROM patients WHERE category=?",(category,))
+	c.execute("SELECT id,patient_name,image,diagnosis,gender,age,category FROM patients WHERE category=? AND treated=0",(category,))
 	data = c.fetchall()
 	response = []
 	diclist = ['id','name','image','diagnosis','gender','age','category']
@@ -142,7 +142,7 @@ def getpatients(du):
         c = db.cursor()
         c.execute("SELECT category FROM users WHERE username=?",(du,))
         category = c.fetchone()[0]
-        c.execute("SELECT id,patient_name,image,diagnosis,gender,age,category FROM patients WHERE category=?",(category,))
+        c.execute("SELECT id,patient_name,image,diagnosis,gender,age,category FROM patients WHERE category=? AND treated=0",(category,))
         data = c.fetchall() 
         response = []
         diclist = ['id','name','image','diagnosis','gender','age','category']
