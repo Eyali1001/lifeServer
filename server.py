@@ -93,7 +93,8 @@ def getpchats(pu):
     c.execute("SELECT activechats FROM patients WHERE patient_name=?",(pu,))
     return c.fetchone()
 
-
+	
+	
 @app.route("/signin",methods=['POST'])
 def signin():
     db = get_db()
