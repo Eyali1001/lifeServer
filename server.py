@@ -33,6 +33,7 @@ def insertintodb():
     c = db.cursor()
     c.execute("UPDATE patients SET diagnosis=?,category=? WHERE patient_name=? ", 
     (request.form["d"],request.form['c'],request.form['u']))
+    c.execute("INSERT INTO locations (lat,lng,category) VALUES (?,?,?)",(request.form['lat'],request.form['lng'],request.form['c']))
     db.commit()
     return "Done."
 

@@ -31,7 +31,7 @@ create table images (
 
 drop table if exists locations;
 create table locations (
-	lat real not null,
-	lng real not null,
+	lat text not null,
+	lng text not null,
 	category text not null
 )
