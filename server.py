@@ -54,8 +54,8 @@ def signup():
         db.commit()
         return "Success"
     elif  request.form['t'] == 'p':
-        c.execute("INSERT INTO patients (patient_name,password,image,age,gender,category,activechats,treated) values (?,?,?,?,?,?,?,?)",
-                  (request.form['u'],request.form['p'],request.form['b'],request.form['a'],request.form['g'],"general","",0))
+        c.execute("INSERT INTO patients (patient_name,password,image,age,gender,activechats,treated) values (?,?,?,?,?,?,?)",
+                  (request.form['u'],request.form['p'],request.form['b'],request.form['a'],request.form['g'],"",0))
         db.commit()
         
         return "Success"
@@ -117,8 +117,11 @@ def signin():
             return "false";
         
         if request.form['p'] == d[0][2]:
-            return "true"
+            print(d[0][:3] + d[0][4:])
+            return json.dumps(d[0][7])
+
         else:
+            print ("correct pass: "+ d[0][2])
             return "false"
         
     
@@ -185,9 +188,10 @@ def getlocs(category):
 	c.execute("SELECT lat,lng FROM locations WHERE category=?", (category,))
 	data = c.fetchall()
 	response = []
-	l = ["lat","lng"]
+	l = ["latitude","longitude"]
 	for row in data:
-		response.append({l[i]:row[i] for i in range(len(row))})
+		response.append({l[i]:float(row[i]) for i in range(len(row))})
+	print (response)
 	return json.dumps(response)
 		
 	
